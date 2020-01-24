@@ -29,6 +29,11 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" id="v3p-oo-DMR">
+                        <barButtonItem key="leftBarButtonItem" title="Item" id="NDd-xg-ufG">
+                            <connections>
+                                <action selector="edit:" destination="BYZ-38-t0r" id="FC4-Ng-H2K"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="1hn-ND-LO6">
                             <connections>
                                 <action selector="addContact:" destination="BYZ-38-t0r" id="kiL-06-GdW"/>

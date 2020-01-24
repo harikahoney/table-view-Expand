@@ -9,41 +9,55 @@
 import UIKit
 import CoreData
 
-class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource {
+class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,UISearchResultsUpdating {
+   
     
     
-       var name1 = [String]()
-       var age = [String]()
-       var email = [String]()
+    
+       var name1  = [String]()
+       var age    = [String]()
+       var email  = [String]()
        var images = [UIImage]()
 
-    var tableView:UITableView!
+       var tableView:UITableView!
     
-    var tollywood:[String] = []
-    var bollywood:[String] = []
-    var hollywood:[String] = []
+       var tollywood:[String] = []
+       var bollywood:[String] = []
+       var hollywood:[String] = []
     
        var tollywoodImages = [UIImage]()
        var bollywoodImages = [UIImage]()
        var hollywoodImages = [UIImage]()
     
-    var desinfgation2 = [String]()
-   
-    var imageVie:UIImageView!
+       var desinfgation2 = [String]()
+       var imageVie:UIImageView!
+       var text4:String?
     
-    var text4:String?
+       var actorArray = [Actors]()
     
- 
-override func viewDidLoad() {
+    
+    override func viewDidLoad() {
     
                  super.viewDidLoad()
        
                  tableViewMerhod()
-        
-        
+    
+     let tollyWoodActors = Actors(ActorNames: tollywood, isExpand: true)
+     let bollyWoodActors = Actors(ActorNames: bollywood, isExpand: true)
+     let hollyWoodActors = Actors(ActorNames: hollywood, isExpand: true)
+    
+    actorArray = [tollyWoodActors,bollyWoodActors,hollyWoodActors]
+   
         // Do any additional setup after loading the view.
     }
-
+    
+    
+    @IBAction func edit(_ sender: Any) {
+        
+    tableView.isEditing = true
+        
+    }
+    
 func tableViewMerhod(){
    
         
@@ -51,120 +65,127 @@ func tableViewMerhod(){
         
     tableView.register(UITableViewCell.self, forCellReuseIdentifier: "abc")
     
-          view.addSubview(tableView)
+    view.addSubview(tableView)
     
-           tableView.delegate = self
-           tableView.dataSource = self
-    
-    
+        tableView.delegate = self
+        tableView.dataSource = self
     }
     
-    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-        
-        if(indexPath.row % 2 == 0){
-            
-            return UITableViewCell.EditingStyle.delete
-            
-            
-        }else{
-            
-            return UITableViewCell.EditingStyle.insert
-        }
-        
-        
-        
-        
-    }
- 
-    
-//func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle,       forRowAt indexPath: IndexPath) {
-//            if editingStyle == .delete {
-//           print("Deleted")
+//    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
 //
-//           self.items.remove(at: indexPath.row)
+//        if(indexPath.row % 2 == 0){
 //
-//           self.tableView.deleteRows(at: [indexPath], with: .automatic)
+//            return UITableViewCell.EditingStyle.delete
 //
 //
-//           }
-//         DBManager.shared.deleteData(entityName: "Contacts", deleteBasedOnColumn:"name" , value:name1[indexPath.row])
+//        }else{
 //
-//        tableView.reloadData()
+//            return UITableViewCell.EditingStyle.insert
 //        }
+//
+//
+//
+//
+//    }
     
-func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
-    }
-    
-func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if(section == 0){
+    func updateSearchResults(for searchController: UISearchController) {
         
-           return "tollyood"
-            }
-    
-        else if(section == 1){
-            
-            
-            
-          return "bollywood"
-            
+       
         }
+  
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+                
+        let button = UIButton()
+        button.backgroundColor = .black
         
-            
-            
-            return "hollywood"
-            
+        button.setTitle("expand", for: UIControl.State.normal)
+        button.tag = section
+        button.addTarget(self, action: #selector(eventForButton(ob:)), for: UIControl.Event.touchUpInside)
+        return button
+    }
+    @objc func eventForButton(ob:UIButton){
+        
+        print("button \(ob.tag)")
        
     }
+/*
+func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle,       forRowAt indexPath: IndexPath) {
+            if editingStyle == .delete {
+           print("Deleted")
+
+                if(indexPath.section == 0 ){
+                
+           self.tollywood.remove(at: indexPath.row)
+        DBManager.shared.deleteData(entityName: "Contacts", deleteBasedOnColumn:"name" , value:tollywood[indexPath.row])
+                }
+                if(indexPath.section == 1 ){
+                               
+            self.bollywood.remove(at: indexPath.row)
+   DBManager.shared.deleteData(entityName: "Contacts", deleteBasedOnColumn:"name" , value:bollywood[indexPath.row])
+                }
+                
+                if(indexPath.section == 2 ){
+                                   
+                self.hollywood.remove(at: indexPath.row)
+    DBManager.shared.deleteData(entityName: "Contacts", deleteBasedOnColumn:"name" , value:hollywood[indexPath.row])
+                    
+                    }
+                
+                
+           self.tableView.deleteRows(at: [indexPath], with: .automatic)
+
+
+           }
+        
+
+        tableView.reloadData()
+        }
+  */
+func numberOfSections(in tableView: UITableView) -> Int {
+    return actorArray.count
+    }
+    
     
     
     
 func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-    if(section == 0 ){
-        
-        return tollywood.count
+    return actorArray[section].ActorNames!.count
     }
-    else if(section == 1){
-        return bollywood.count
-    }
-    
-    return hollywood.count
-         
-         }
-    
 func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     
     
     
        let cell = tableView.dequeueReusableCell(withIdentifier: "abc", for: indexPath)
    
-//    cell.translatesAutoresizingMaskIntoConstraints = true
-    cell.heightAnchor.constraint(equalToConstant: 100).isActive = true
+//     cell.translatesAutoresizingMaskIntoConstraints = true
+       cell.heightAnchor.constraint(equalToConstant: 100).isActive = true
        cell.widthAnchor.constraint(equalToConstant: 100).isActive = true
-//
+
 //      cell.imageView?.heightAnchor.constraint(equalToConstant: 100).isActive = true
 //      cell.imageView?.widthAnchor.constraint(equalToConstant: 100).isActive = true
-//
-      
+
     
+    cell.textLabel!.text = actorArray[indexPath.section].ActorNames![indexPath.row]
+      
+
     if(indexPath.section == 0){
         cell.textLabel?.text = tollywood[indexPath.row]
         cell.imageView?.image = tollywoodImages[indexPath.row]
-       
-       
-      
-        
+
+
+
+
     }
    else if(indexPath.section == 1){
     cell.textLabel?.text = bollywood[indexPath.row]
         cell.imageView?.image = bollywoodImages[indexPath.row]
-       
+
     }
     else if(indexPath.section == 2){
         cell.textLabel?.text = hollywood[indexPath.row]
         cell.imageView?.image = hollywoodImages[indexPath.row]
-       
+
     }
      
    
@@ -216,7 +237,7 @@ func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
     override func viewWillAppear(_ animated: Bool) {
        
-
+ 
         
         let data = DBManager.shared.fetchDAta(entityName: "Contacts")
      
